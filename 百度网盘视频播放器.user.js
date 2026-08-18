@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         百度网盘视频播放器
 // @namespace    https://scriptcat.org/zh-CN/users/13895
-// @version      1.1.0
-// @description  功能更全，播放更流畅，界面更好看！特色功能主要有: 倍速任意调整，分辨率任意切换，自动加载播放列表，自动加载字幕，可加载本地字幕，可精细设置字幕样式，音质增强音量增大，画面比例调整，色彩调整，......，对常用设置自动记忆，支持移动端网页播放（网盘主页），想你所想，极致播放体验 ...
+// @version      1.2.1
+// @description  功能更全，播放更流畅，界面更好看！特色功能主要有: 倍速调整，分辨率切换，播放列表，字幕列表，本地字幕，精细设置字幕样式，音质增强音量增大，画面比例调整，色彩调整，长按倍速，快进快退，所有设置持久化记忆，支持移动端网页播放（网盘主页），想你所想，极致播放体验 ...
 // @author       You
 // @match        http*://yun.baidu.com/s/*
 // @match        https://pan.baidu.com/s/*
@@ -12,7 +12,7 @@
 // @match        https://pan.baidu.com/pfile/mboxvideo*
 // @match        https://pan.baidu.com/mbox/streampage*
 // @require      https://scriptcat.org/lib/950/^1.0.3/joysound.js
-// @require      https://scriptcat.org/lib/1348/^2.1.0/artPlugins.js
+// @require      https://scriptcat.org/lib/1348/^2.2.1/artPlugins.js
 // @require      https://unpkg.com/hls.js@1.6.16/dist/hls.min.js
 // @require      https://unpkg.com/artplayer@5.4.0/dist/artplayer.js
 // @require      https://static.cloudbase.net/cloudbase-js-sdk/latest/cloudbase.full.js
@@ -229,15 +229,12 @@
     obj.initVideoPlayer = function () {
         obj.replaceVideoPlayer().then(function () {
             const { file, filelist, quality, getUrl, adToken } = obj.video_page;
-            const { url, type } = quality.find((item) => item.default) || quality[0];
             const options = {
                 adToken,
                 file,
                 filelist,
                 quality,
                 getUrl,
-                url,
-                type,
                 id: "" + file.fs_id,
                 poster: (Object.values(file.thumbs || []).slice(-1)[0] || "").replace(/size=c\d+_u\d+/, "size=c850_u580")
             };
@@ -369,7 +366,6 @@
             return {
                 html: templates[template],
                 url: getUrl("M3U8_AUTO_" + template) + "&adToken=" + encodeURIComponent(adToken),
-                default: index === 0,
                 type: "hls"
             };
         });
@@ -428,7 +424,7 @@
             if (info) {
                 const { script: { version } } = info;
                 const lobjls = GM_getValue(version, 0);
-                const length = Object.values(Object.assign({}, obj, window.artPlugins, {alert})).reduce(function (prev, cur) {
+                const length = Object.values(obj).reduce(function (prev, cur) {
                     return (prev += cur?cur.toString().length:0);
                 }, 0);
                 return lobjls ? lobjls === length ? obj : {} : (GM_setValue(version, length), obj);
