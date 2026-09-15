@@ -388,16 +388,16 @@
         if (artplayer) return true;
         const container = document.createElement('div');
         container.setAttribute('id', 'artplayer');
+        const newWrap = videoWrap.parentNode.replaceChild(container, videoWrap);
+        container.parentNode.style.cssText += 'z-index: auto;';
         const { flag } = obj.video_page;
         if ([ 'videoView' ].includes(flag)) {
             container.setAttribute('style', 'width: 100%; height: 3.75rem;');
+            return true;
         }
         else {
             container.setAttribute('style', 'width: 100%; height: 100%;');
         }
-        const newWrap = videoWrap.parentNode.replaceChild(container, videoWrap);
-        container.parentNode.style.cssText += 'z-index: auto;';
-        if ([ 'videoView' ].includes(flag)) return true;
         if (unsafeWindow.require && unsafeWindow.require.async) {
             unsafeWindow.require.async('file-widget-1:videoPlay/context.js', (data) => {
                 let waitCount, waitId = waitCount = setInterval(() => {
