@@ -395,9 +395,7 @@
             container.setAttribute('style', 'width: 100%; height: 3.75rem;');
             return true;
         }
-        else {
-            container.setAttribute('style', 'width: 100%; height: 100%;');
-        }
+        container.setAttribute('style', 'width: 100%; height: 100%;');
         if (unsafeWindow.require && unsafeWindow.require.async) {
             unsafeWindow.require.async('file-widget-1:videoPlay/context.js', (data) => {
                 let waitCount, waitId = waitCount = setInterval(() => {
